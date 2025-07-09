@@ -1,4 +1,5 @@
 #include <iostream>
+#include <glad/glad.h>
 #include <SDL2/SDL.h>
 
 //Globais
@@ -9,6 +10,13 @@ SDL_Window*     gGraphicsApplicationWindow = nullptr;
 SDL_GLContext   gOpenGLContext = nullptr;
 
 bool gQuit = false;
+
+void GetOpenGLVersionInfo(){
+    std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
+    std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
+    std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+}
 
 void inicializar(){
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
@@ -36,11 +44,17 @@ void inicializar(){
     gOpenGLContext = SDL_GL_CreateContext(gGraphicsApplicationWindow);
 
     if(gOpenGLContext == nullptr){
-        std::cout << "contextOpenGL Falhou" << std::endl;
+        std::cout << "Context OpenGL não foi aberto" << std::endl;
         exit(1);
-    }else{
-        std::cout << "ContextOpenGL Aberto" << std::endl;
     }
+
+    // Inicializar biblioteca Glad
+    if(!gladLoadGLLoader(SDL_GL_GetProcAddress)){
+        std::cout << "Glad não foi inicializado" << std::endl;
+        exit(1);
+    }
+
+    GetOpenGLVersionInfo();
 }
 
 void Input(){
